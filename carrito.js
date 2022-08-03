@@ -9,11 +9,13 @@ for (let boton of btn_compra){
 
 }
 
-let carrito = [];
+
 
 function agregar_a_carrito(e){
-
-    console.log("EL EVENTO ESTA EN:" , e.target);
+    
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    
+    console.log("EL EVENTO ESTA EN:" , e.target.id);
 
     let hijo = e.target;
     let padre = hijo.parentNode;
@@ -81,9 +83,12 @@ function borrar_producto(e){
 }
 
 const pintarFooter = () => {
-    footer.innerHTML = ''
     
-    if (Object.keys(carrito).length === 0) {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    
+    
+    
+    if (carrito.length === 0) {
         footer.innerHTML = `
         <th scope="row" colspan="5">Carrito vacío con innerHTML</th>
         `
@@ -91,21 +96,19 @@ const pintarFooter = () => {
     }
     
     // sumar cantidad y sumar totales
-    const nCantidad = Object.values(carrito).reduce((acc, { cantidad }) => acc + cantidad, 0)
-    const nPrecio = Object.values(carrito).reduce((acc, {cantidad, precio}) => acc + cantidad * precio ,0)
+    const nCantidad = carrito.reduce((acc , prod ) => acc + prod.cantidad, 0)
+    const nPrecio = carrito.reduce((acc, prod) => acc + prod.cantidad * prod.precio ,0)
     // console.log(nPrecio)
 
-    templateFooter.querySelectorAll('td')[0].textContent = nCantidad
-    templateFooter.querySelector('span').textContent = nPrecio
+    // templateFooter.querySelectorAll('td')[0].textContent = nCantidad
+    // templateFooter.querySelector('span').textContent = nPrecio
+    console.log (nCantidad , nPrecio)
 
-    const clone = templateFooter.cloneNode(true)
-    fragment.appendChild(clone)
-
-    footer.appendChild(fragment)
-
+    
+    
     const boton = document.querySelector('#vaciar-carrito')
     boton.addEventListener('click', () => {
-        carrito = {}
+    
         pintarCarrito()
     })
 
